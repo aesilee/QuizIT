@@ -471,15 +471,21 @@ function checkFill() {
     renderAttemptDots(learnAttempts);
 
     if (learnAttempts < MAX_ATTEMPTS) {
-      const firstLetter = card.term[0].toUpperCase();
-      document.getElementById('learn-hint-bar').textContent =
-        `💡 Hint: The answer starts with "${firstLetter}"`;
+      const words = card.term.trim().split(/\s+/);
+      let hintLabel;
+      if (words.length >= 2) {
+        const hint = words.map(w => w[0].toUpperCase() + '_'.repeat(Math.max(w.length - 1, 2))).join(' ');
+        hintLabel = `💡 Hint: ${hint}`;
+      } else {
+        hintLabel = `💡 Hint: Starts with "${card.term[0].toUpperCase()}"`;
+      }
+      document.getElementById('learn-hint-bar').textContent = hintLabel;
       fb.textContent = `✕ Not quite — try again!`;
       fb.className   = 'fill-feedback wrong show';
       setTimeout(() => {
         inp.className = 'fill-input';
         fb.className  = 'fill-feedback hint show';
-        fb.textContent = `💡 Hint: starts with "${firstLetter}" — ${MAX_ATTEMPTS - learnAttempts} attempt${(MAX_ATTEMPTS - learnAttempts) !== 1 ? 's' : ''} left`;
+        fb.textContent = `${hintLabel} — ${MAX_ATTEMPTS - learnAttempts} attempt${(MAX_ATTEMPTS - learnAttempts) !== 1 ? 's' : ''} left`;
         inp.focus();
       }, 600);
 
