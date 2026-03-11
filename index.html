@@ -27,6 +27,10 @@
       <span class="sidebar-icon">➕</span>
       <span class="sidebar-item-label">New Set</span>
     </button>
+    <button class="sidebar-item" id="snav-sets" onclick="toggleSetsDropup()">
+      <span class="sidebar-icon">📚</span>
+      <span class="sidebar-item-label">My Sets</span>
+    </button>
   </nav>
 
   <div class="sidebar-sets-section">
@@ -335,6 +339,14 @@
 <div class="toast" id="toast">
   <span id="toast-icon">✓</span>
   <span id="toast-msg">Saved!</span>
+</div>
+
+<!-- ══ MOBILE SETS DROPUP ══ -->
+<div class="mobile-sets-overlay" id="mobile-sets-overlay" onclick="closeSetsDropup()"></div>
+<div class="mobile-sets-dropup" id="mobile-sets-dropup">
+  <div class="mobile-sets-dropup-handle"></div>
+  <div class="mobile-sets-dropup-title">My Sets</div>
+  <div id="mobile-sets-dropup-list"></div>
 </div>
 
 <script src="app.js"></script>

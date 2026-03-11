@@ -71,6 +71,17 @@ function renderSidebarSets() {
       <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(s.title)}</span>
     </button>
   `).join('');
+  // Keep mobile dropup list in sync too
+  const mobileList = document.getElementById('mobile-sets-dropup-list');
+  if (mobileList) {
+    mobileList.innerHTML = sets.length
+      ? sets.map(s => `
+          <div class="mobile-sets-dropup-item" onclick="closeSetsDropup(); showSetDetail('${s.id}')">
+            <span class="mobile-sets-dropup-dot"></span>
+            <span>${esc(s.title)}</span>
+          </div>`).join('')
+      : `<div style="color:var(--text3); font-size:0.85rem; padding:16px 0; text-align:center;">No sets yet</div>`;
+  }
 }
 
 function setTopbarTitle(text) {
@@ -849,3 +860,35 @@ document.addEventListener('click', (e) => {
     sidebar.classList.remove('mobile-open');
   }
 });
+
+// ── MOBILE SETS DROPUP ─────────────────────────────────────────────────────
+function toggleSetsDropup() {
+  const dropup  = document.getElementById('mobile-sets-dropup');
+  const overlay = document.getElementById('mobile-sets-overlay');
+  if (!dropup) return;
+
+  const isOpen = dropup.classList.contains('open');
+  if (isOpen) {
+    closeSetsDropup();
+  } else {
+    // Populate list fresh each open
+    const list = document.getElementById('mobile-sets-dropup-list');
+    list.innerHTML = sets.length
+      ? sets.map(s => `
+          <div class="mobile-sets-dropup-item" onclick="closeSetsDropup(); showSetDetail('${s.id}')">
+            <span class="mobile-sets-dropup-dot"></span>
+            <span>${esc(s.title)}</span>
+          </div>`).join('')
+      : `<div style="color:var(--text3); font-size:0.85rem; padding:16px 0; text-align:center;">No sets yet</div>`;
+
+    dropup.classList.add('open');
+    overlay.classList.add('open');
+    document.getElementById('snav-sets')?.classList.add('active');
+  }
+}
+
+function closeSetsDropup() {
+  document.getElementById('mobile-sets-dropup')?.classList.remove('open');
+  document.getElementById('mobile-sets-overlay')?.classList.remove('open');
+  document.getElementById('snav-sets')?.classList.remove('active');
+}
