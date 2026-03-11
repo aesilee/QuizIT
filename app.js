@@ -829,13 +829,13 @@ const isMobile = () => window.innerWidth <= 768;
 
 function toggleSidebar() {
   if (isMobile()) {
-    document.getElementById('sidebar').classList.toggle('mobile-open');
-  } else {
-    sidebarCollapsed = !sidebarCollapsed;
-    document.body.classList.toggle('sidebar-collapsed', sidebarCollapsed);
-    const btn = document.getElementById('collapse-btn');
-    if (btn) btn.textContent = sidebarCollapsed ? '›' : '‹';
+    // On mobile the sidebar is always visible as bottom nav — nothing to toggle
+    return;
   }
+  sidebarCollapsed = !sidebarCollapsed;
+  document.body.classList.toggle('sidebar-collapsed', sidebarCollapsed);
+  const btn = document.getElementById('collapse-btn');
+  if (btn) btn.textContent = sidebarCollapsed ? '›' : '‹';
 }
 
 // Close mobile sidebar when clicking outside

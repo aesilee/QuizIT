@@ -939,3 +939,72 @@ body.light-mode .main-wrap::before {
   .card-row { grid-template-columns: 24px 1fr; }
   .options-group { flex-direction: column; }
 }
+
+/* ── BOTTOM NAV (mobile) ── */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: none !important;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100% !important;
+    height: 64px;
+    flex-direction: row;
+    align-items: center;
+    border-right: none;
+    border-top: 1px solid var(--border);
+    overflow: visible;
+    z-index: 200;
+  }
+
+  /* Hide everything except the nav buttons */
+  .sidebar-logo,
+  .sidebar-sets-section,
+  .sidebar-bottom,
+  .sidebar-collapse-btn,
+  .sidebar-section-label { display: none !important; }
+
+  .sidebar-nav {
+    flex-direction: row;
+    width: 100%;
+    padding: 0;
+    gap: 0;
+    justify-content: space-around;
+  }
+
+  .sidebar-item {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 6px 8px;
+    flex: 1;
+    border-radius: 0;
+    font-size: 0.65rem;
+    height: 64px;
+    white-space: nowrap;
+  }
+
+  .sidebar-icon { font-size: 1.3rem; }
+
+  .sidebar-item.active {
+    background: transparent;
+    color: var(--accent);
+    border-top: 2px solid var(--accent);
+  }
+
+  /* Push main content up so it doesn't hide behind bottom nav */
+  .main-wrap {
+    margin-left: 0 !important;
+    margin-bottom: 64px;
+  }
+
+  .main-wrap::before { left: 0 !important; }
+
+  /* Topbar: hide hamburger since sidebar is now bottom nav */
+  .topbar-hamburger { display: none !important; }
+
+  /* Sticky topbar padding fix */
+  .topbar { padding: 0 18px; }
+}
