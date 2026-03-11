@@ -987,7 +987,7 @@ body.light-mode .main-wrap::before {
   #snav-sets { display: flex !important; }
 
   .mobile-sets-dropup { display: block !important; }
-  .mobile-sets-overlay { display: block !important; }
+  .mobile-sets-overlay.open { display: block !important; }
 
   /* ── DROPUP PANEL (My Sets) ── */
   .mobile-sets-dropup {
