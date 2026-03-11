@@ -368,7 +368,7 @@ function renderLearnQuestion() {
   const card = learnQueue[learnIndex];
 
   if (learnPhase === 1) {
-    // ── Multiple Choice ──
+    // ── Multiple Choice Learn ──
     document.getElementById('learn-q-text').textContent = card.definition;
     document.getElementById('learn-q-sub').textContent  = 'Which term matches this definition?';
     document.getElementById('learn-mc-options').style.display = '';
@@ -376,7 +376,16 @@ function renderLearnQuestion() {
 
     const allCards = set.cards;
     const wrong = allCards.filter(c => c.id !== card.id);
-    const opts  = shuffle([card, ...shuffle(wrong).slice(0, 3)]);
+    const wrongTerms = shuffle(wrong).slice(0, 3).map(c => c.term);
+
+    while (wrongTerms.length < 3) {
+      wrongTerms.push(generateDistractor(card.term, wrongTerms));
+    }
+
+    const opts = shuffle([
+      { term: card.term, id: card.id },
+      ...wrongTerms.map(t => ({ term: t, id: null }))
+    ]);
     const keys  = ['A', 'B', 'C', 'D'];
 
     document.getElementById('learn-mc-options').innerHTML = opts.map((o, i) => `
@@ -384,7 +393,7 @@ function renderLearnQuestion() {
         <div class="mc-key">${keys[i]}</div>
         <span>${esc(o.term)}</span>
       </div>
-    `).join('');
+    `).join(''); 
 
   } else {
     // ── Fill in the Blank ──
@@ -604,7 +613,12 @@ function buildTestQuestion(card, i) {
       ? set.cards.filter(c => c.id !== card.id).map(c => c.term)
       : set.cards.filter(c => c.id !== card.id).map(c => c.definition);
 
-    const wrongs  = shuffle(pool).slice(0, 3);
+    let wrongs = shuffle(pool).slice(0, 3);
+
+    while (wrongs.length < 3) {
+      wrongs.push(generateDistractor(correctAnswer, wrongs));
+    }
+
     const options = shuffle([correctAnswer, ...wrongs]);
     const keys    = ['A', 'B', 'C', 'D'];
 
@@ -809,6 +823,57 @@ function shuffle(arr) {
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
   return arr;
+}
+
+function generateDistractor(correct, existing) {
+  const words = correct.trim().split(/\s+/);
+  const attempts = [];
+
+  // Strategy 1: reverse word order if multi-word e.g. "Lexical Analysis" → "Analysis Lexical"
+  if (words.length >= 2) {
+    attempts.push([...words].reverse().join(' '));
+  }
+
+  // Strategy 2: shuffle words if 3+ words
+  if (words.length >= 3) {
+    attempts.push(shuffle([...words]).join(' '));
+  }
+
+  // Strategy 3: mutate last word suffix
+  const suffixes = ['ing', 'tion', 'ment', 'ity', 'ness', 'er', 'al', 'ive'];
+  const lastWord = words[words.length - 1].toLowerCase();
+  for (const sfx of suffixes) {
+    if (!lastWord.endsWith(sfx)) {
+      const mutated = words.slice(0, -1).concat(
+        lastWord.replace(/(?:ing|tion|ment|ity|ness|er|al|ive|s)?$/, sfx)
+      ).join(' ');
+      attempts.push(mutated);
+      break;
+    }
+  }
+
+  // Strategy 4: swap one letter in the middle of the first word
+  const base = words[0];
+  if (base.length > 3) {
+    const mid = Math.floor(base.length / 2);
+    const swapped = base.slice(0, mid) +
+      String.fromCharCode(base.charCodeAt(mid) + 1) +
+      base.slice(mid + 1);
+    attempts.push(words.length > 1 ? swapped + ' ' + words.slice(1).join(' ') : swapped);
+  }
+
+  // Strategy 5: prepend "Non-" or "Anti-"
+  attempts.push('Non-' + correct.toLowerCase());
+  attempts.push('Anti-' + words[words.length - 1].toLowerCase());
+
+  // Pick first attempt not already used and not matching correct answer
+  const used = new Set([correct.toLowerCase(), ...existing.map(e => e.toLowerCase())]);
+  for (const a of attempts) {
+    if (!used.has(a.toLowerCase())) return a;
+  }
+
+  // Absolute fallback
+  return correct + ' ' + (existing.length + 2);
 }
 
 // ── THEME ──────────────────────────────────────────────────────────────────
