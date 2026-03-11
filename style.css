@@ -337,6 +337,10 @@ body.sidebar-collapsed .sidebar-logo { padding: 20px 0 6px; justify-content: cen
 /* Hide mobile-only My Sets nav button on desktop */
 #snav-sets { display: none; }
 
+/* Hide mobile-only dropup elements on desktop */
+.mobile-sets-dropup,
+.mobile-sets-overlay { display: none; }
+
 /* ── BUTTONS ── */
 .btn {
   font-family: 'DM Sans', sans-serif;
@@ -981,6 +985,9 @@ body.light-mode .main-wrap::before {
   }
 
   #snav-sets { display: flex !important; }
+
+  .mobile-sets-dropup { display: block !important; }
+  .mobile-sets-overlay { display: block !important; }
 
   /* ── DROPUP PANEL (My Sets) ── */
   .mobile-sets-dropup {
