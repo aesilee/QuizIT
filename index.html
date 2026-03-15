@@ -6,6 +6,7 @@
 <title>QuizIT — Flashcard System</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -39,7 +40,13 @@
   </div>
 
   <div class="sidebar-bottom">
-    <div class="sidebar-tip"></div>
+    <div class="sidebar-user" id="sidebar-user">
+      <div class="sidebar-user-avatar" id="sidebar-user-avatar">?</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-email" id="user-email-display">—</div>
+      </div>
+      <button class="sidebar-logout-btn" onclick="authSignOut()" title="Sign out">↩</button>
+    </div>
   </div>
 
   <div class="sidebar-collapse-btn">
@@ -89,7 +96,7 @@
       <div class="mode-btn" onclick="startLearn()">
         <div class="mode-icon">🧠</div>
         <h4>Learn</h4>
-        <p>Multiple choice → Fill in blank</p>
+        <p>Memorize sets faster</p>
       </div>
       <div class="mode-btn" onclick="openTestOptions()">
         <div class="mode-icon">📝</div>
@@ -349,6 +356,40 @@
   <div id="mobile-sets-dropup-list"></div>
 </div>
 
+<!-- ══ AUTH OVERLAY ══ -->
+<div class="auth-overlay" id="auth-overlay">
+  <div class="auth-card">
+    <div class="auth-logo">✦ QuizIT</div>
+    <div class="auth-tagline">Your personal study companion</div>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Log In</button>
+      <button class="auth-tab" id="tab-signup" onclick="switchAuthTab('signup')">Sign Up</button>
+    </div>
+
+    <h2 class="auth-title" id="auth-title">Welcome back</h2>
+
+    <div class="auth-form">
+      <div class="auth-field">
+        <label>Email</label>
+        <input type="email" id="auth-email" placeholder="you@email.com" onkeydown="authKeydown(event)">
+      </div>
+      <div class="auth-field">
+        <label>Password</label>
+        <input type="password" id="auth-password" placeholder="••••••••" onkeydown="authKeydown(event)">
+      </div>
+      <div class="auth-error" id="auth-error"></div>
+      <button class="btn btn-primary auth-btn" id="auth-submit-btn" onclick="authSubmit()">Log In</button>
+    </div>
+
+    <div class="auth-switch">
+      <span id="auth-switch-msg">Don't have an account? </span>
+      <button id="auth-switch-btn" onclick="switchAuthTab('signup')">Sign up</button>
+    </div>
+  </div>
+</div>
+
+<script src="auth.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

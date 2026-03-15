@@ -11,6 +11,8 @@ function loadSets() {
 }
 function saveSets(sets) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(sets));
+  // Also sync to cloud if user is signed in (auth.js provides syncSetsToCloud)
+  if (typeof syncSetsToCloud === 'function') syncSetsToCloud();
 }
 function genId() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
@@ -895,7 +897,11 @@ function initTheme() {
 
 // ── INIT ───────────────────────────────────────────────────────────────────
 initTheme();
-renderHome();
+// Auth handles calling renderHome() after sign-in
+// initAuth() is defined in auth.js and called after both scripts load
+document.addEventListener('DOMContentLoaded', () => {
+  initAuth();
+});
 
 document.getElementById('logo-btn').addEventListener('click', renderHome);
 
